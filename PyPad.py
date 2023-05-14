@@ -10,25 +10,25 @@ import time
 class PyPad:
     root = Tk()
     
-    #height = root.winfo_screenheight()
-    #width = root.winfo_screenwidth()
-    height = 400
-    width = 800
+    height = root.winfo_screenheight()
+    width = root.winfo_screenwidth()
+    #height = 400
+    #width = 800
     
-    root.attributes('-fullscreen', True)
+    root.attributes('-fullscreen', False)      #change it to True if you want the application to work in fullscreen mode
     
     TextArea = tkinter.Text(root, height = 25, width = 10, bg= "#FFFFFF", fg = "#0000ff")
-    #TextArea = tkinter.Text(root, height = 25, width = 10, bg= "#112233", fg = "#FFFF00")
     
-    #InputArea = tkinter.Text(root, bg = "#FF0000", fg = "#000000", height = "100", width = "200")
-    input = tkinter.Text(root, height = 20, width = 70, bg = '#00ff55')
+    
+
+    inp = tkinter.Text(root, height = 20, width = 70, bg = '#00ff55')
     empl = tkinter.Label(root, text = '', bg = 'black')
     emp1 = tkinter.Label(root, text = 'INPUT', bg = 'black', fg = 'white')
     emp2 = tkinter.Label(root, text = 'OUTPUT', bg = 'black', fg = 'white')
     
     output = tkinter.Text(root, height = 20, width = 70, bg = '#005588', fg = "#ffff00")
-    #input.grid(sticky = N+E)
-    #TextArea = Text(root, bg= "#112233", fg= "#FFFF00")
+    
+    
     MenuBar = Menu(root)
     File = Menu(MenuBar, tearoff =0)
     Edit = Menu(MenuBar, tearoff =0)
@@ -39,13 +39,13 @@ class PyPad:
     
     
     ScrollBar = Scrollbar(TextArea)
-    file =None
+    file = None
     
     
     
     def __init__(self, **kwargs):
         try:
-            self.root.wm_iconbitmap("codeoutlinedprogrammingsigns_81143.ico")
+            self.root.wm_iconbitmap("icon.ico")
         except:
             pass
         
@@ -59,7 +59,7 @@ class PyPad:
         except:
             pass
             
-        self.root.title("Compiler")
+        self.root.title("PYPAD")
         
         screenWidth = self.root.winfo_screenwidth()
         screenHeight = self.root.winfo_screenheight()
@@ -72,7 +72,7 @@ class PyPad:
         self.root.grid_columnconfigure(0, weight =1)
         
         self.TextArea.grid(row = 0, column = 0, sticky = N+E+S+W)
-        self.input.grid(row = 0, column = 1, sticky = N+E, pady = 20, padx = 20)
+        self.inp.grid(row = 0, column = 1, sticky = N+E, pady = 20, padx = 20)
         
         self.output.grid(row = 0, column =1, sticky = E+S, pady = 20, padx = 20)
         self.empl.grid(row = 0, column = 1, sticky = W+E)
@@ -81,11 +81,11 @@ class PyPad:
         
         
         self.File.add_command(label = "New", command = self.new)
-        self.File.add_command(label = "Open", command  = self.open)
+        self.File.add_command(label = "Open", command  = self.openfile)
         self.File.add_command(label = "Save", command = self.save)
         self.File.add_command(label = "Save As", command = self.saveas)
         self.File.add_separator()
-        self.File.add_command(label = "Exit", command = self.exit)
+        self.File.add_command(label = "Exit", command = self.exitfile)
         
         self.MenuBar.add_cascade(label = "File", menu = self.File)
         
@@ -95,16 +95,13 @@ class PyPad:
         
         self.MenuBar.add_cascade(label = "Edit", menu = self.Edit)
         
-        self.Execute.add_command(label = "Python", command = self.exe)
-        self.Execute.add_command(label = "C++", command = self.exe2)
-        self.Execute.add_command(label = "C", command = self.exe4)
-        self.Execute.add_command(label = "Java", command = self.exe3)
+        self.Execute.add_command(label = "Python", command = self.exePython)
+        self.Execute.add_command(label = "C++", command = self.exeCplusplus)
+        self.Execute.add_command(label = "C", command = self.exeC)
+        self.Execute.add_command(label = "Java", command = self.exeJava)
         
         self.MenuBar.add_cascade(label = "Run", menu = self.Execute)
-        '''
-        self.Mode.add_command(label = "Dark Mode", command = self.dark)
-        self.Mode.add_command(label = "Light Mode", command = self.light)
-        self.MenuBar.add_cascade(label = "Mode", menu = self.Mode)'''
+        
 
         self.Options.add_command(label = "Get output in another window", command = self.window)
         self.MenuBar.add_cascade(label = "Options", menu = self.Options)
@@ -121,23 +118,23 @@ class PyPad:
         self.output.configure(state = 'disabled')
         
     def takeinp(self):
-        inp = self.input.get('1.0', 'end-1c')
+        inp = self.inp.get('1.0', 'end-1c')
         return inp.encode('utf-8')
     
-    def exit(self):
+    def exitfile(self):
         if(self.file == None):
-            ret = messagebox.askokcancel("Hey!!", "Do you want to save the file?")
+            ret = tkinter.messagebox.askokcancel("Hey!!", "Do you want to save the file?")
             if (ret ==1):
                 self.save()
         self.root.destroy()
         
-    def open(self):
+    def openfile(self):
         self.file = askopenfilename(defaultextension = ".py", filetypes = [("All files", "*.*"),("Text Documents", "*.txt")])
             
         if self.file == "":
             self.file = None
         else:
-            self.root.title(os.path.abspath(self.file) + " - Compiler")
+            self.root.title(os.path.abspath(self.file) + " -PYPAD")
             
             self.TextArea.delete(1.0, END)
            
@@ -148,7 +145,7 @@ class PyPad:
             file.close()
             
     def new(self):
-        self.root.title("Output")
+        self.root.title("PYPAD")
         self.file = None
         self.TextArea.delete(1.0, END)
         
@@ -160,20 +157,20 @@ class PyPad:
                 self.file = None
             elif(self.file == ""):
                 self.file = f
-                self.root.title(os.path.basename(self.file) + "-Compiler")
+                self.root.title(os.path.basename(self.file) + "-PYPAD")
             else:
                 file = open(self.file, "w")
                 file.write(self.TextArea.get(1.0, END))
                 file.close()
-                self.root.title(os.path.basename(self.file) + "-Compiler")   
+                self.root.title(os.path.basename(self.file) + "-PYPAD")   
                 
             
             
-    def save(self, str = ""):
-        if(str == "" and self.file!=None):
+    def save(self, ext = ""):
+        if(ext == "" and self.file!=None):
             str = os.path.splitext(self.file)[1]
         if self.file == None:
-            self.file = asksaveasfilename( initialfile = "Untitled.py", defaultextension = str, filetypes = [("All files", "*.*"),("Text Documents", "*.txt")])
+            self.file = asksaveasfilename( initialfile = "Untitled.py", defaultextension = ext, filetypes = [("All files", "*.*"),("Text Documents", "*.txt")])
             if self.file =="":
                 self.file = None
                 
@@ -181,37 +178,20 @@ class PyPad:
                 file = open(self.file, "w")
                 file.write(self.TextArea.get(1.0, END))
                 file.close()
-                self.root.title(os.path.basename(self.file) + "-Compiler")
+                self.root.title(os.path.basename(self.file) + "-PYPAD")
                 
         else:
-            if os.path.splitext(self.file)[1] == str:
+            if (os.path.splitext(self.file)[1] == ext or (ext == ".cpp" and os.path.splitext(self.file)[1] == ".c") or (ext == ".cpp" and os.path.splitext(self.file)[1] == ".cp")):
                 file = open(self.file, "w")
                 file.write(self.TextArea.get(1.0, END))
                 file.close()
-                self.root.title(os.path.basename(self.file) + "-Compiler")
+                self.root.title(os.path.basename(self.file) + "-PYPAD")
             else:
                 
-                messagebox.showwarning("Warning", "Please execute the file with proper extension.")
+                tkinter.messagebox.showwarning("Warning", "Please execute the file with proper extension.")
                 return 0
-                '''
-                fil = os.path.abspath(self.file)
-                print(fil)
-                f = ('.').join(fil.split('.')[:-1])
-                print(f)
-                f = f + str
-                print(f)
-                #f = os.path.splitext(self.file)[0] + str
-                os.rename(self.file, f)
-                #os.remove(self.file)
-                file = open(self.file, "w")
-                print(os.path.abspath(self.file))
-                #print(file)
-                #print(os.path.splitext(file)[1])
-                file.write(self.TextArea.get(1.0, END))
-                file.close()
-                print(os.path.abspath(self.file))
-                self.root.title(os.path.basename(self.file) + "-Compiler")
-                '''
+                
+                
                
     def cut(self):
         self.TextArea.event_generate("<<Cut>>")
@@ -221,31 +201,26 @@ class PyPad:
             
     def paste(self):
         self.TextArea.event_generate("<<Paste>>")
-    '''
-    def dark(self):
-        print("dark1")
-        print(dir(self.TextArea))
-        self.TextArea = tkinter.Text(self.root, bg= "#112233", fg = "#FFFF00")
-        #print(self.TextArea,id(self.TextArea))
-        #print("dark2")
         
-    def light(self):
-        self.TextArea = Text(self.root, bg= "#FFFFFF", fg = "#0000FF")'''
         
-    def exe(self):
+        
+    def exePython(self):
+    
+        text = self.TextArea.get(1.0, END)
+        #print(len(str(text)))
+        
+        if(len(str(text)) == 1):
+            return tkinter.messagebox.showwarning("Warning", "Nothing to execute")
+    
+    
+    
         if(self.save(".py")!=0):
             
             if (self.file == None):
-                messagebox.showwarning("Warning", "What to run?")
+                tkinter.messagebox.showwarning("Warning", "Save the file.")
             else:
                 
                 st = self.takeinp()
-                
-
-                '''tt = Text(new_win1)
-                tt.pack()
-                str = tt.get('1.0', END).encode('utf-8')            
-                time.sleep(5)'''
                 
                 cmd = "python \"" + os.path.abspath(self.file) + "\""
                 
@@ -264,10 +239,20 @@ class PyPad:
                 
 
             
-    def exe2(self):
+    def exeCplusplus(self):
+    
+        text = self.TextArea.get(1.0, END)
+        #print(len(str(text)))
+        
+        if(len(str(text)) == 1):
+            return tkinter.messagebox.showwarning("Warning", "Nothing to execute")
+    
+    
+        
+    
         if(self.save(".cpp")!=0):
             if (self.file == None):
-                messagebox.showwarning("Warning", "What to run?")
+                tkinter.messagebox.showwarning("Warning", "Save the file.")
             else:
                 
                 st = self.takeinp()
@@ -281,8 +266,6 @@ class PyPad:
                 o, e = out.communicate()
                 
 
-                #t.insert('1.0', e)
-                #t.insert('1.0', o)
                 
                 if(e == b''):
                     cmd = "./main.exe"
@@ -302,10 +285,20 @@ class PyPad:
                     self.output.configure(state = 'disabled')
                 
                 
-    def exe4(self):
+    def exeC(self):
+    
+        text = self.TextArea.get(1.0, END)
+        #print(len(str(text)))
+        
+        if(len(str(text)) == 1):
+            return tkinter.messagebox.showwarning("Warning", "Nothing to execute")
+    
+    
+    
+    
         if(self.save(".c")!=0):
             if (self.file == None):
-                messagebox.showwarning("Warning", "What to run?")
+                tkinter.messagebox.showwarning("Warning", "Save the file.")
             else:
                 
                 st = self.takeinp()
@@ -340,10 +333,17 @@ class PyPad:
                     self.output.configure(state = 'disabled')
                 
                 
-    def exe3(self):
+    def exeJava(self):
+    
+        text = self.TextArea.get(1.0, END)
+        #print(len(str(text)))
+        
+        if(len(str(text)) == 1):
+            return tkinter.messagebox.showwarning("Warning", "Nothing to execute")
+        
         if(self.save(".java")!=0):
             if (self.file == None):
-                messagebox.showwarning("Warning", "What to run?")
+                tkinter.messagebox.showwarning("Warning", "Save the file.")
             else:
                 st = self.takeinp()
                 store_cur_dir = os.getcwd()
@@ -396,9 +396,9 @@ class PyPad:
         return neww
         
     def about(self):
-        messagebox.showinfo("About This Compiler", "This is an Editor for execution of codes written in Python, Java and C++."
-        " You can write your codes here and execute it without bothering about anything else."
-        " You just need to have installed gcc( for C), g++ (for C++), Python and JVM(for Java) in your system. Enjoy.")
+        tkinter.messagebox.showinfo("About PYPAD", "This is an editor which works as an interface between your code and command prompt and facilitates execution of codes written in Python, Java and C++."
+        " You can write your codes here and execute it without bothering about anything else. You can also open files with proper extension which are written in the mentiones programming languages."
+        " You just need to have installed gcc( for C), g++ (for C++), Python(for Python) and JVM(for Java) in your system. Enjoy.")
         
             
             
@@ -408,11 +408,11 @@ class PyPad:
     def window(self):
         out = self.output.get('1.0', 'end-1c') 
         if(out == ""):
-            messagebox.showwarning("Warning", "Execute the code first by clicking on the programming language option.")
+            tkinter.messagebox.showwarning("Warning", "Execute the code first by clicking on the programming language option.")
         else:
             n = self.createNewWindow()
             try:
-                n.wm_iconbitmap("codeoutlinedprogrammingsigns_81143.ico")
+                n.wm_iconbitmap("icon.ico")
             except:
                 pass
             t = Text(n)
@@ -420,17 +420,13 @@ class PyPad:
             t.insert('1.0', out)
             
         
-    '''def input(self):
-        n = self.createNewWindow()
-        tt = tkinter.Text(n)
-        st = tt.get('1.0', END).encode('utf-8')
-        return st'''
         
-        
-        
+if __name__== '__main__':
+    pypad = PyPad()
+    pypad.run()
+    
             
-pypad = PyPad()
-pypad.run()
+
 
 
         
